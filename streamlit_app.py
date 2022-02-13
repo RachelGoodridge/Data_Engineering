@@ -8,11 +8,12 @@ import streamlit as st
 st.write("## COVID-19 Cases vs Vaccines in the U.S.")
 
 # retrieve data from pickle
-with open("data.pkl", "rb") as f:
-    data = pkl.load(f)
-    df = data["df"]
-    cases = data["cases"]
-    vaccines = data["vaccines"]
+with open("df.pkl", "rb") as f:
+    df = pkl.load(f)
+with open("cases2.pkl", "rb") as f:
+    cases2 = pkl.load(f)
+with open("vaccines.pkl", "rb") as f:
+    vaccines = pkl.load(f)
 
 # Map Visualizations
 st.write("Have a look at the distribution of COVID cases and vaccines across the United States.")
@@ -94,8 +95,8 @@ log = st.checkbox("Plot the first graph on a log scale")
 if log:
     fig = plt.figure(figsize=(11,4))
     ax1 = plt.subplot(1,2,1) 
-    ax1.plot(cases.date.unique(), cases.groupby("date").sum()["cases"], label="Cases")
-    ax1.plot(cases.date.unique(), cases.groupby("date").sum()["deaths"], label="Deaths")
+    ax1.plot(cases2.index, cases2["cases"], label="Cases")
+    ax1.plot(cases2.index, cases2["deaths"], label="Deaths")
     ax1.set_ylabel("Cumulative Counts (log scale)")
     ax1.set_yscale("log")
     fig.autofmt_xdate(rotation=45)
@@ -112,8 +113,8 @@ if log:
 else:
     fig = plt.figure(figsize=(11,4))
     ax1 = plt.subplot(1,2,1) 
-    ax1.plot(cases.date.unique(), cases.groupby("date").sum()["cases"], label="Cases")
-    ax1.plot(cases.date.unique(), cases.groupby("date").sum()["deaths"], label="Deaths")
+    ax1.plot(cases2.index, cases2["cases"], label="Cases")
+    ax1.plot(cases2.index, cases2["deaths"], label="Deaths")
     ax1.set_ylabel("Cumulative Counts")
     fig.autofmt_xdate(rotation=45)
     ax1.legend()
