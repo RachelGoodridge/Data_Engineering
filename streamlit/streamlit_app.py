@@ -14,24 +14,22 @@ with open("streamlit/cases2.pkl", "rb") as f:
     cases2 = pkl.load(f)
 with open("streamlit/vaccines.pkl", "rb") as f:
     vaccines = pkl.load(f)
+with open("streamlit/cases.pkl", "rb") as f:
+    temp = pkl.load(f)
+with open("streamlit/counties.pkl", "rb") as f:
+    counties = pkl.load(f)
 
 # map visualizations
-st.write("#### Have a look at the distribution of COVID cases and vaccines across the United States.")
+st.write("#### Distribution of COVID cases and vaccines across the United States")
 time = st.selectbox("Pick a month and year", df.month.unique(), index=len(df.month.unique())-1)
-column = st.selectbox("Pick a topic", ["new cases", "new cases per capita", "total cases", "total cases per capita", "new deaths", "total deaths", "percent vaccinated", "percent fully vaccinated", "percent boosted"])
+column = st.selectbox("Pick a topic", ["new cases", "total cases", "new deaths", "total deaths", "percent vaccinated", "percent fully vaccinated", "percent boosted"])
 
 if column == "new cases":
     color = "new_cases"
     title = "New COVID Cases"
-elif column == "new cases per capita":
-    color = "new_cases_per_capita"
-    title = "New COVID Cases Per Capita"
 elif column == "total cases":
     color = "cases"
     title = "Cumulative COVID Cases"
-elif column == "total cases per capita":
-    color = "cases_per_capita"
-    title = "Cumulative COVID Cases Per Capita"
 elif column == "new deaths":
     color = "new_deaths"
     title = "New Deaths due to COVID"
@@ -48,15 +46,21 @@ else:
     color = "perc_boost"
     title = "Percent of People Boosted"
 
-fig = px.choropleth(df[df.month == time], locations="abbrev", color=color, hover_name="state", locationmode="USA-states")
+if (column == "new cases") or (column == "total cases") or (column == "new deaths") or (column == "total deaths"):
+    if st.checkbox("per capita", value=True):
+        color += "_per_capita"
+        title += " Per Capita"
+    
+fig = px.choropleth(df[df.month == time], locations="abbrev", color=color, hover_data=["state", "pop_size"],
+                    locationmode="USA-states", labels={color:column, "pop_size":"population", "abbrev":"abbreviation"})
 fig.update_layout(title_text=f"{title} in the United States in {time}", geo_scope="usa", title_x=0.5)
 st.plotly_chart(fig)    
 
 st.markdown("""---""")
 
 # dataframe user query of states
-st.write("#### Create your own dataframe query to compare between the U.S. states and territories.")
-column = st.radio("Pick a topic", ["total cases", "cases per capita", "total deaths", "percent vaccinated", "percent fully vaccinated", "percent boosted"])
+st.write("#### Dataframe query to compare between the U.S. states and territories")
+column = st.radio("Pick a topic", ["total cases", "cases per capita", "total deaths", "deaths per capita", "percent vaccinated", "percent fully vaccinated", "percent boosted"])
 high_low = st.radio("Pick a ranking", ["highest", "lowest"])
 
 if column == "total cases":
@@ -68,6 +72,9 @@ elif column == "cases per capita":
 elif column == "total deaths":
     column = "deaths"
     st.write(f"Which state or territory has the {high_low} cumulative number of deaths from COVID to date?")
+elif column == "deaths per capita":
+    column = "deaths_per_capita"
+    st.write(f"Which state or territory has the {high_low} cumulative number of deaths from COVID per capita?")
 elif column == "percent vaccinated":
     column = "perc_vacc"
     st.write(f"Which state or territory has the {high_low} percentage of vaccinated people to date?")
@@ -88,8 +95,8 @@ st.dataframe(df[df.month == df.month.values[-1]][mask][["state", "abbrev", "mont
 st.markdown("""---""")
 
 # plot cases, deaths, and vaccines (aggregated by date)
-st.write("#### Have a look at the increase in COVID-19 cases over time in comparison to the average percentage of the population that is vaccinated.")
-st.write("Configurations the first graph:")
+st.write("#### COVID-19 cases versus the average percentage vaccinated over time")
+st.write("Configurations for the first graph:")
 log = st.checkbox("Plot on a log scale")
 count_style = st.radio("Cumulative or Daily?", ["total counts", "new daily counts"])
 
@@ -116,3 +123,18 @@ ax2.set_ylabel("Average Percent Vaccinated")
 fig.autofmt_xdate(rotation=45)
 ax2.legend()
 st.pyplot(fig)
+
+st.markdown("""---""")
+
+# map visualizations by county
+st.write("#### Distribution of COVID cases grouped by county")
+topic = st.radio("Pick a topic", ["cases", "deaths"])
+
+if topic == "cases":
+    title = "Cumulative COVID Cases in the United States by County"
+else:
+    title = "Cumulative Deaths due to COVID in the United States by County"
+
+fig = px.choropleth(temp, geojson=counties, locations="fips", color=topic, hover_data=["state", "county"])
+fig.update_layout(title_text=title, geo_scope="usa", title_x=0.5)
+st.plotly_chart(fig) 
