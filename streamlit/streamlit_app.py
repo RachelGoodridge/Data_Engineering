@@ -53,6 +53,7 @@ if (column == "new cases") or (column == "total cases") or (column == "deaths") 
     if st.checkbox("per capita", value=True):
         color += "_per_capita"
         title += " Per Capita"
+        column += " per capita"
     
 fig = px.choropleth(df[df.month == time], locations="abbrev", color=color, hover_data=["state", "pop_size"],
                     locationmode="USA-states", labels={color:column, "pop_size":"population", "abbrev":"abbreviation"})
