@@ -130,5 +130,5 @@ st.pyplot(fig)
 st.markdown("""---""")
 
 st.write("Rachel Goodridge")
-st.write("Updated Feb 2022")
+st.write("Updated Feb 19, 2022")
 st.write("[GitHub](https://github.com/RachelGoodridge/Data_Engineering)")
