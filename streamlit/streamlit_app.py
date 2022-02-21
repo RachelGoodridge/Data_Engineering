@@ -66,35 +66,34 @@ st.markdown("""---""")
 st.write("#### Dataframe query to compare between the U.S. states and territories")
 column = st.radio("Pick a topic", ["total cases", "cases per capita", "total deaths", "deaths per capita", "percent vaccinated", "percent fully vaccinated", "percent boosted"])
 high_low = st.radio("Pick a ranking", ["highest", "lowest"])
+dis_num = st.number_input("Display rows", min_value=1, max_value=50, value=5, step=1)
 
 if column == "total cases":
     column = "cases"
-    st.write(f"Which state or territory has the {high_low} cumulative number of COVID cases to date?")
+    st.write(f"Which {dis_num} states or territories have the {high_low} cumulative number of COVID cases to date?")
 elif column == "cases per capita":
     column = "cases_per_capita"
-    st.write(f"Which state has the {high_low} cumulative number of COVID cases per capita?")
+    st.write(f"Which {dis_num} states have the {high_low} cumulative number of COVID cases per capita?")
 elif column == "total deaths":
     column = "deaths"
-    st.write(f"Which state or territory has the {high_low} cumulative number of deaths from COVID to date?")
+    st.write(f"Which {dis_num} states or territories have the {high_low} cumulative number of deaths from COVID to date?")
 elif column == "deaths per capita":
     column = "deaths_per_capita"
-    st.write(f"Which state or territory has the {high_low} cumulative number of deaths from COVID per capita?")
+    st.write(f"Which {dis_num} states have the {high_low} cumulative number of deaths from COVID per capita?")
 elif column == "percent vaccinated":
     column = "perc_vacc"
-    st.write(f"Which state or territory has the {high_low} percentage of vaccinated people to date?")
+    st.write(f"Which {dis_num} states or territories have the {high_low} percentage of vaccinated people to date?")
 elif column == "percent fully vaccinated":
     column = "perc_full_vacc"
-    st.write(f"Which state or territory has the {high_low} percentage of fully vaccinated people to date?")
+    st.write(f"Which {dis_num} states or territories have the {high_low} percentage of fully vaccinated people to date?")
 else:
     column = "perc_boost"
-    st.write(f"Which state or territory has the {high_low} percentage of boosted people to date?")
+    st.write(f"Which {dis_num} states or territories have the {high_low} percentage of boosted people to date?")
 
 if high_low == "highest":
-    mask = df[df.month == df.month.values[-1]][column] == max(df[df.month == df.month.values[-1]][column])
+    st.dataframe(df[df.month == df.month.values[-1]].sort_values(column, ascending=False)[:dis_num][["state", "abbrev", column]])
 else:
-    mask = df[df.month == df.month.values[-1]][column] == min(df[df.month == df.month.values[-1]][column])
-    
-st.dataframe(df[df.month == df.month.values[-1]][mask][["state", "abbrev", "month", column]])
+    st.dataframe(df[df.month == df.month.values[-1]].sort_values(column)[:dis_num][["state", "abbrev", column]])
 
 st.markdown("""---""")
 
@@ -132,3 +131,4 @@ st.markdown("""---""")
 
 st.write("Rachel Goodridge")
 st.write("Updated Feb 2022")
+st.write("[GitHub](https://github.com/RachelGoodridge/Data_Engineering)")
