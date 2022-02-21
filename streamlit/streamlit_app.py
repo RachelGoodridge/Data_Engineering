@@ -22,25 +22,25 @@ column = st.selectbox("Pick a topic", ["new cases", "total cases", "deaths", "to
 
 if column == "new cases":
     color = "new_cases"
-    title = "New COVID Cases"
+    title = "New COVID Cases in the United States in {time}".format(time=time)
 elif column == "total cases":
     color = "cases"
-    title = "Cumulative COVID Cases"
+    title = "Cumulative COVID Cases in the United States (Jan 2020 - {time})".format(time=time)
 elif column == "deaths":
     color = "new_deaths"
-    title = "Deaths due to COVID"
+    title = "Deaths due to COVID in the United States in {time}".format(time=time)
 elif column == "total deaths":
     color = "deaths"
-    title = "Cumulative Deaths due to COVID"
+    title = "Cumulative Deaths due to COVID in the United States (Jan 2020 - {time})".format(time=time)
 elif column == "percent vaccinated":
     color = "perc_vacc"
-    title = "Percent of People Vaccinated"
+    title = "Percent of People Vaccinated in the United States (Jan 2020 - {time})".format(time=time)
 elif column == "percent fully vaccinated":
     color = "perc_full_vacc"
-    title = "Percent of People Fully Vaccinated"
+    title = "Percent of People Fully Vaccinated in the United States (Jan 2020 - {time})".format(time=time)
 else:
     color = "perc_boost"
-    title = "Percent of People Boosted"
+    title = "Percent of People Boosted in the United States (Jan 2020 - " + time + " )"
 
 if (column == "new cases") or (column == "total cases") or (column == "deaths") or (column == "total deaths"):
     if st.checkbox("per capita", value=True):
@@ -49,7 +49,7 @@ if (column == "new cases") or (column == "total cases") or (column == "deaths") 
     
 fig = px.choropleth(df[df.month == time], locations="abbrev", color=color, hover_data=["state", "pop_size"],
                     locationmode="USA-states", labels={color:column, "pop_size":"population", "abbrev":"abbreviation"})
-fig.update_layout(title_text=f"{title} in the United States in {time}", geo_scope="usa", title_x=0.5)
+fig.update_layout(title_text=title, geo_scope="usa", title_x=0.5)
 st.plotly_chart(fig)    
 
 st.markdown("""---""")
@@ -91,7 +91,7 @@ st.dataframe(df[df.month == df.month.values[-1]][mask][["state", "abbrev", "mont
 st.markdown("""---""")
 
 # plot cases, deaths, and vaccines (aggregated by date)
-st.write("#### COVID-19 cases versus the average percentage of each state vaccinated")
+st.write("#### COVID-19 cases over time versus the average percentage of each state vaccinated")
 st.write("Configurations for the first graph:")
 log = st.checkbox("Plot on a log scale")
 count_style = st.radio("Cumulative or Daily?", ["total counts", "new daily counts"])
