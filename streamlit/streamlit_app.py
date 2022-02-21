@@ -39,15 +39,15 @@ elif column == "total deaths":
 elif column == "percent vaccinated":
     color = "perc_vacc"
     title = "Percent of People Vaccinated" 
-    dates = "(Jan 2020 - {time})".format(time=time)
+    dates = "in {time}".format(time=time)
 elif column == "percent fully vaccinated":
     color = "perc_full_vacc"
     title = "Percent of People Fully Vaccinated"
-    dates = "(Jan 2020 - {time})".format(time=time)
+    dates = "in {time}".format(time=time)
 else:
     color = "perc_boost"
     title = "Percent of People Boosted"
-    dates = "(Jan 2020 - {time})".format(time=time)
+    dates = "in {time}".format(time=time)
 
 if (column == "new cases") or (column == "total cases") or (column == "deaths") or (column == "total deaths"):
     if st.checkbox("per capita", value=True):
