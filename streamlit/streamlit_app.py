@@ -14,15 +14,11 @@ with open("streamlit/cases2.pkl", "rb") as f:
     cases2 = pkl.load(f)
 with open("streamlit/vaccines.pkl", "rb") as f:
     vaccines = pkl.load(f)
-with open("streamlit/cases.pkl", "rb") as f:
-    temp = pkl.load(f)
-with open("streamlit/counties.pkl", "rb") as f:
-    counties = pkl.load(f)
 
 # map visualizations
 st.write("#### Distribution of COVID cases and vaccines across the United States")
 time = st.selectbox("Pick a month and year", df.month.unique(), index=len(df.month.unique())-1)
-column = st.selectbox("Pick a topic", ["new cases", "total cases", "new deaths", "total deaths", "percent vaccinated", "percent fully vaccinated", "percent boosted"])
+column = st.selectbox("Pick a topic", ["new cases", "total cases", "deaths", "total deaths", "percent vaccinated", "percent fully vaccinated", "percent boosted"])
 
 if column == "new cases":
     color = "new_cases"
@@ -30,9 +26,9 @@ if column == "new cases":
 elif column == "total cases":
     color = "cases"
     title = "Cumulative COVID Cases"
-elif column == "new deaths":
+elif column == "deaths":
     color = "new_deaths"
-    title = "New Deaths due to COVID"
+    title = "Deaths due to COVID"
 elif column == "total deaths":
     color = "deaths"
     title = "Cumulative Deaths due to COVID"
@@ -46,7 +42,7 @@ else:
     color = "perc_boost"
     title = "Percent of People Boosted"
 
-if (column == "new cases") or (column == "total cases") or (column == "new deaths") or (column == "total deaths"):
+if (column == "new cases") or (column == "total cases") or (column == "deaths") or (column == "total deaths"):
     if st.checkbox("per capita", value=True):
         color += "_per_capita"
         title += " Per Capita"
@@ -119,22 +115,12 @@ ax2 = plt.subplot(1,2,2)
 ax2.plot(vaccines.date.unique(), vaccines.groupby("date").mean()["perc_vacc"], label="Vaccinated")
 ax2.plot(vaccines.date.unique(), vaccines.groupby("date").mean()["perc_full_vacc"], label="Fully Vaccinated")
 ax2.plot(vaccines.date.unique(), vaccines.groupby("date").mean()["perc_boost"], label="Boosted")
-ax2.set_ylabel("Average Percent Vaccinated")
+ax2.set_ylabel("Average Percent Vaccinated for all States")
 fig.autofmt_xdate(rotation=45)
 ax2.legend()
 st.pyplot(fig)
 
 st.markdown("""---""")
 
-# map visualizations by county
-st.write("#### Distribution of COVID cases grouped by county")
-topic = st.radio("Pick a topic", ["cases", "deaths"])
-
-if topic == "cases":
-    title = "Cumulative COVID Cases in the United States by County"
-else:
-    title = "Cumulative Deaths due to COVID in the United States by County"
-
-fig = px.choropleth(temp, geojson=counties, locations="fips", color=topic, hover_data=["state", "county"])
-fig.update_layout(title_text=title, geo_scope="usa", title_x=0.5)
-st.plotly_chart(fig) 
+st.write("Rachel Goodridge")
+st.write("Updated Feb 2022")
