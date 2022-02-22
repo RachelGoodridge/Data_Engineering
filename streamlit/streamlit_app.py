@@ -63,7 +63,7 @@ st.plotly_chart(fig)
 st.markdown("""---""")
 
 # dataframe user query of states
-st.write("#### Dataframe query to compare between the U.S. states and territories")
+st.write("#### DataFrame query to compare between the U.S. states and territories")
 column = st.radio("Pick a topic", ["total cases", "cases per capita", "total deaths", "deaths per capita", "percent vaccinated", "percent fully vaccinated", "percent boosted"])
 high_low = st.radio("Pick a ranking", ["highest", "lowest"])
 dis_num = st.number_input("Display rows", min_value=1, max_value=50, value=5, step=1)
